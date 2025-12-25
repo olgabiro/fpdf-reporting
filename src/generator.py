@@ -1,7 +1,7 @@
 from fpdf import FPDF, XPos, YPos
 
 
-def get_data():
+def get_data() -> list[tuple[str, str, str, str]]:
     return [
         ("PROJ-101", "Fix login flow", "Done", "Alice"),
         ("PROJ-102", "Add metrics dashboard", "In Progress", "Bob"),
@@ -9,7 +9,7 @@ def get_data():
     ]
 
 
-def get_summary_data():
+def get_summary_data() -> list[tuple[str, str]]:
     return [
         ("Total Tickets", "58"),
         ("Completed", "42"),
@@ -26,7 +26,7 @@ STRIPE_ACCENT = (99, 91, 255)
 STRIPE_ROW_ALT = (242, 245, 252)
 
 
-def generate_minimalist():
+def generate_minimalist() -> None:
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Helvetica", "B", 20)
@@ -82,7 +82,7 @@ def generate_minimalist():
     pdf.output("report.pdf")
 
 
-def generate_stripe_style():
+def generate_stripe_style() -> None:
     pdf = FPDF()
     pdf.add_page()
 
@@ -147,7 +147,7 @@ def generate_stripe_style():
     pdf.output("report_stripe.pdf")
 
 
-def generate_notion_style():
+def generate_notion_style() -> None:
     pdf = FPDF()
     pdf.add_page()
 

@@ -1,6 +1,7 @@
 from typing import List, Optional, Tuple
 
 from fpdf import FPDF, XPos, YPos
+
 from model.style import Style
 from model.ticket import Status, Ticket
 
@@ -19,13 +20,14 @@ PRIORITY_COLORS = {
 
 
 class PDF(FPDF):
-    def __init__(self, style: Style, **kwargs):
+    style: Style
+
+    def __init__(self, style: Style, **kwargs) -> None:
         super().__init__(**kwargs)
         self.style = style
         self.set_margin(25)
-        self.set_auto_page_break(auto=True, margin=25)
 
-    def document_header(self, text: str, centered: bool = False):
+    def document_header(self, text: str, centered: bool = False) -> None:
         font = self.style.font
         self.set_font(font.font_family, "B", font.header_size)
         self.set_fill_color(*self.style.header_background)  # warm gray
@@ -53,7 +55,7 @@ class PDF(FPDF):
             )
         self.set_y(self.get_y() + self.style.margin)
 
-    def section_title(self, text: str):
+    def section_title(self, text: str) -> None:
         font = self.style.font
         self.set_font(font.font_family, "B", font.section_title_size)
         self.set_text_color(*self.style.section_title_color)
@@ -61,11 +63,11 @@ class PDF(FPDF):
         self.ln(1)
 
     def summary_card(
-        self,
-        items: List[str],
-        width: int = 80,
-        x: Optional[float] = None,
-        y: Optional[float] = None,
+            self,
+            items: List[str],
+            width: int = 80,
+            x: Optional[float] = None,
+            y: Optional[float] = None,
     ) -> tuple[float, float]:
         start_x = x or self.x
         start_y = y or self.y
@@ -100,9 +102,10 @@ class PDF(FPDF):
             self.set_xy(start_x + width + padding, start_y)
         return start_x + width, start_y + card_height
 
-    def styled_table(
-        self, headers: list[str], rows: list[tuple], col_widths: list[int]
-    ):
+    def styled_table(self,
+                     headers: list[str],
+                     rows: list[tuple[str, str, str, str]],
+                     col_widths: list[int]) -> None:
         font = self.style.font
         self.set_font(font.font_family, "B", font.table_header_size)
         self.set_fill_color(*self.style.table_header_color)
@@ -127,7 +130,9 @@ class PDF(FPDF):
             self.ln()
         self.set_y(self.get_y() + self.style.margin)
 
-    def tag(self, text, status: Status) -> Tuple[float, float]:
+    def tag(self,
+            text: str,
+            status: Status) -> Tuple[float, float]:
         bg = self.style.status_colors.get(
             status, self.style.status_colors[Status.OTHER]
         )
@@ -148,16 +153,17 @@ class PDF(FPDF):
         self.set_xy(x + text_w, y)  # end cell
         return text_w, text_h
 
-    def detailed_tickets_table(self, tickets: list[Ticket]):
+    def detailed_tickets_table(self, tickets: list[Ticket]) -> None:
         font = self.style.font
         self.set_font(font.font_family, "", font.font_size)
 
         for t in tickets:
             self.ticket_card_long(t)
 
-    def ticket_card_long(
-        self, ticket: Ticket, x: Optional[float] = None, y: Optional[float] = None
-    ):
+    def ticket_card_long(self,
+                         ticket: Ticket,
+                         x: Optional[float] = None,
+                         y: Optional[float] = None) -> None:
         start_x = x or self.x
         start_y = y or self.y
         width = self.w - self.r_margin - self.l_margin
@@ -165,7 +171,7 @@ class PDF(FPDF):
         left_padding = 6
         top_padding = 2
 
-        stripe_color = self.style.category_colors.get(ticket.category)
+        stripe_color: tuple[int, int, int] = self.style.category_colors.get(ticket.category)
         self.set_fill_color(*stripe_color)
         self.rect(
             start_x,
@@ -195,7 +201,7 @@ class PDF(FPDF):
         self.set_xy(start_x + left_padding, start_y + line_height + 2 * top_padding)
         self.tag(ticket.issue_type, Status.OTHER)
         if ticket.priority:
-            dot_color = PRIORITY_COLORS.get(ticket.priority)
+            dot_color: tuple[int, int, int] | None = PRIORITY_COLORS.get(ticket.priority)
             dot_x = self.get_x() + left_padding
             dot_y = self.get_y() + (line_height - 3) / 2
             self.set_fill_color(*dot_color)

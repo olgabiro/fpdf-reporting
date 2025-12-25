@@ -3,6 +3,7 @@
 # once you add the font via pdf.add_font().
 
 from io import BytesIO
+from typing import Callable, Optional
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -20,12 +21,12 @@ class NotionPDF(FPDF):
         "Default": (227, 226, 224),  # neutral gray
     }
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.set_auto_page_break(auto=True, margin=15)
+    add_multiple_pie_charts: Callable
+    add_pie_chart: Callable
+    build_pie_chart_bytes: Callable
 
     # Utility: draw a subtle Notion divider
-    def divider(self, y_offset=4):
+    def divider(self, y_offset: float=4) -> None:
         self.ln(y_offset)
         self.set_draw_color(230, 230, 230)
         x1, x2 = 10, self.w - 10
@@ -34,7 +35,7 @@ class NotionPDF(FPDF):
         self.ln(6)
 
     # Section title (Notion style)
-    def section_title(self, text):
+    def section_title(self, text: str) -> None:
         self.set_font(FONT_FAMILY, "B", 13)
         self.set_text_color(55, 53, 47)
         self.cell(0, 10, text, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
@@ -42,7 +43,7 @@ class NotionPDF(FPDF):
 
         # Notion-like rounded tag using rounded rectangles
 
-    def tag(self, text, status="Default"):
+    def tag(self, text: str, status: str = "Default") -> None:
         bg = self.TAG_COLORS.get(status, self.TAG_COLORS["Default"])
         self.set_font(FONT_FAMILY, "", 9)
         self.set_text_color(55, 53, 47)
@@ -53,14 +54,14 @@ class NotionPDF(FPDF):
 
         # Draw rounded rectangle
         self.set_fill_color(*bg)
-        self.rounded_rect(x, y, text_w, text_h, 1.5, style="F")
+        self.rect(x, y, text_w, text_h, style="F", round_corners=True, corner_radius=1.5)
 
         # Print text
         self.set_xy(x + 3, y + 1)
         self.cell(text_w, text_h - 2, text, border=0)
         self.set_xy(x + text_w, y)  # end cell
 
-    def summary_card(self, items):
+    def summary_card(self, items: list[tuple[str, str]]) -> None:
         self.set_fill_color(247, 246, 243)
         self.set_xy(10, self.get_y())
 
@@ -84,7 +85,10 @@ class NotionPDF(FPDF):
         self.ln(3)
 
     # Notion-style table
-    def table(self, headers, rows, col_widths):
+    def formatted_table(self,
+                        headers: list[str],
+                        rows: list[tuple[str, str, str, str]],
+                        col_widths: list[int]) -> None:
         # header background
         self.set_font(FONT_FAMILY, "B", 11)
         self.set_fill_color(243, 242, 239)
@@ -111,7 +115,7 @@ class NotionPDF(FPDF):
     # Detailed Tickets Table (Notion-style rich row visualization)
     # ------------------------------------------------------------------
 
-    def detailed_tickets_table(self, tickets):
+    def detailed_tickets_table(self, tickets: list[dict[str, str]]) -> None:
         """
         Render a detailed list of tickets with:
         - Key
@@ -209,7 +213,7 @@ class NotionPDF(FPDF):
 # EXAMPLE USAGE --------------------------------------------------------------
 
 
-def generate_notion_pdf():
+def generate_notion_pdf() -> None:
     pdf = NotionPDF()
     pdf.add_page()
 
@@ -259,7 +263,7 @@ def generate_notion_pdf():
     transformed_rows = []
     for key, summary, status, assignee in table_data:
         transformed_rows.append((key, summary, status, assignee))
-    pdf.table(headers, transformed_rows, col_widths)
+    pdf.formatted_table(headers, transformed_rows, col_widths)
 
     pdf.output("notion_report.pdf")
 
@@ -280,8 +284,9 @@ NOTION_CHART_COLORS = [
 ]
 
 
-@staticmethod
-def build_pie_chart_bytes(title, data_pairs, size_inch=2.4):  # smaller charts
+def build_pie_chart_bytes(title: str,
+                          data_pairs: list[tuple[str, float]],
+                          size_inch: float = 2.4) -> BytesIO:  # smaller charts
     """Return a PNG image as bytes for a pie chart (non‑donut, full pie).(title, data_pairs, size_inch=3):
 
     data_pairs: list of (label, value)
@@ -303,7 +308,7 @@ def build_pie_chart_bytes(title, data_pairs, size_inch=2.4):  # smaller charts
 
         colors = NOTION_CHART_COLORS[: len(labels)]
 
-        wedges, texts = ax.pie(
+        wedges, _ = ax.pie(
             sizes,
             colors=colors,
             startangle=90,
@@ -336,9 +341,13 @@ def build_pie_chart_bytes(title, data_pairs, size_inch=2.4):  # smaller charts
 NotionPDF.build_pie_chart_bytes = build_pie_chart_bytes
 
 
-def add_pie_chart(
-    self, title, data_pairs, max_width_mm=70, size_inch=2.4, caption=None, legend=True
-):  # smaller charts(self, title, data_pairs, max_width_mm=90, size_inch=3, caption=None, legend=True):(self, title, data_pairs, max_width_mm=90, size_inch=3, caption=None):
+def add_pie_chart(self: NotionPDF,
+                  title: str,
+                  data_pairs: list[tuple[str, int]],
+                  max_width_mm: float = 70,
+                  size_inch: float = 2.4,
+                  caption: Optional[str] = None,
+                  legend: bool = True) -> None:
     """Generate a pie chart in-memory and insert it into the PDF.
 
     - max_width_mm: how wide the chart should be on the page (mm)
@@ -437,9 +446,14 @@ def add_pie_chart(
 NotionPDF.add_pie_chart = add_pie_chart
 
 
-def add_multiple_pie_charts(
-    self, charts, per_row=2, chart_width=50, h_spacing=45, v_spacing=16, size_inch=3
-):
+def add_multiple_pie_charts(self: NotionPDF,
+                            charts: list[tuple[str, list[tuple[str, int]]]],
+                            per_row: int = 2,
+                            chart_width: float = 50,
+                            h_spacing: float = 45,
+                            v_spacing: float = 16,
+                            size_inch: float = 3
+                            ) -> None:
     """Add several pie charts.
 
     charts: list of (title, data_pairs)

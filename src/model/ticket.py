@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from enum import StrEnum
 from typing import Optional
+from unicodedata import category
 
 
 class Category(StrEnum):
@@ -33,10 +34,10 @@ class Ticket:
     developer: Optional[str] = None
     category: Optional[Category] = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if isinstance(self.category, str):
-            coerced = Category(self.category)
-            self.category = coerced
+            typed_category = Category(self.category)
+            self.category = typed_category
         if isinstance(self.status, str):
-            coerced = Status(self.status)
-            self.status = coerced
+            typed_status = Status(self.status)
+            self.status = typed_status

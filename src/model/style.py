@@ -16,7 +16,7 @@ class Font:
 
 
 class Style:
-    category_colors: dict[Category, Tuple[int, int, int]]
+    category_colors: dict[Optional[Category], Tuple[int, int, int]]
     status_colors: dict[Status, Tuple[int, int, int]]
     chart_colors: list[Tuple[int, int, int]]
     margin: int = 10
@@ -50,7 +50,7 @@ class NotionStyle(Style):
         Status.READY_TO_MERGE: (227, 226, 224),  # neutral gray
         Status.OTHER: (227, 226, 224),  # neutral gray
     }
-    chart_colors: list[Tuple[float, float, float]] = [
+    chart_colors: list[Tuple[int, int, int]] = [
         (155, 207, 87),  # green
         (246, 199, 68),  # yellow
         (108, 155, 245),  # blue

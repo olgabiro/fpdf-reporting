@@ -1,4 +1,4 @@
-from typing import Tuple, Optional
+from typing import Optional, Tuple
 
 from model.ticket import Category, Status
 
@@ -39,7 +39,7 @@ class NotionStyle(Style):
         Category.COMMITTED: (217, 241, 208),
         Category.NICE_TO_HAVE: (255, 232, 163),
         Category.MAYBE: (212, 228, 247),
-        None: (227, 226, 224)
+        None: (227, 226, 224),
     }
     status_colors: dict[Status, Tuple[int, int, int]] = {
         Status.READY_FOR_DEV: (217, 241, 208),  # green
@@ -48,7 +48,7 @@ class NotionStyle(Style):
         Status.READY_FOR_QA: (212, 228, 247),  # blue
         Status.LOCAL_TESTING: (212, 228, 247),  # blue
         Status.READY_TO_MERGE: (227, 226, 224),  # neutral gray
-        Status.OTHER: (227, 226, 224)  # neutral gray
+        Status.OTHER: (227, 226, 224),  # neutral gray
     }
     chart_colors: list[Tuple[float, float, float]] = [
         (155, 207, 87),  # green
@@ -62,10 +62,7 @@ class NotionStyle(Style):
     card_background: Tuple[int, int, int] = (255, 238, 189)
     header_background: Tuple[int, int, int] = (247, 246, 243)
     table_header_color: Tuple[int, int, int] = (243, 242, 239)
-    table_row_colors: list[Tuple[int, int, int]] = [
-        (255, 255, 255),
-        (250, 249, 247)
-    ]
+    table_row_colors: list[Tuple[int, int, int]] = [(255, 255, 255), (250, 249, 247)]
     font_color: Tuple[int, int, int] = (55, 53, 47)
     section_title_color: Tuple[int, int, int] = (55, 53, 47)
     card_details_color: Tuple[int, int, int] = (80, 79, 75)

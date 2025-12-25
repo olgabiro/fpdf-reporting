@@ -8,6 +8,7 @@ class Category(StrEnum):
     NICE_TO_HAVE = "Nice to have"
     MAYBE = "Maybe"
 
+
 class Status(StrEnum):
     READY_FOR_DEV = "Ready for dev"
     ON_HOLD = "On Hold"

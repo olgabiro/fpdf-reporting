@@ -1,7 +1,6 @@
-from typing import List, Tuple, Optional
+from typing import List, Optional, Tuple
 
 from fpdf import FPDF, XPos, YPos
-
 from model.style import Style
 from model.ticket import Status, Ticket
 
@@ -15,12 +14,11 @@ LABEL_SIZE: int = 7
 PRIORITY_COLORS = {
     "High": (252, 216, 212),  # red
     "Medium": (255, 232, 163),  # yellow
-    "Low": (217, 241, 208)  # green
+    "Low": (217, 241, 208),  # green
 }
 
 
 class PDF(FPDF):
-
     def __init__(self, style: Style, **kwargs):
         super().__init__(**kwargs)
         self.style = style
@@ -33,10 +31,26 @@ class PDF(FPDF):
         self.set_fill_color(*self.style.header_background)  # warm gray
         self.set_text_color(55, 53, 47)
         if centered:
-            self.cell(0, font.header_size, text, align="C", fill=True, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            self.cell(
+                0,
+                font.header_size,
+                text,
+                align="C",
+                fill=True,
+                new_x=XPos.LMARGIN,
+                new_y=YPos.NEXT,
+            )
         else:
             self.cell(self.style.padding, font.header_size, "", fill=True)
-            self.cell(0, font.header_size, text, align="L", fill=True, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            self.cell(
+                0,
+                font.header_size,
+                text,
+                align="L",
+                fill=True,
+                new_x=XPos.LMARGIN,
+                new_y=YPos.NEXT,
+            )
         self.set_y(self.get_y() + self.style.margin)
 
     def section_title(self, text: str):
@@ -46,8 +60,13 @@ class PDF(FPDF):
         self.cell(0, self.style.cell_height, text, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
         self.ln(1)
 
-    def summary_card(self, items: List[str], width: int = 80, x: Optional[float] = None, y: Optional[float] = None) -> \
-    tuple[float, float]:
+    def summary_card(
+        self,
+        items: List[str],
+        width: int = 80,
+        x: Optional[float] = None,
+        y: Optional[float] = None,
+    ) -> tuple[float, float]:
         start_x = x or self.x
         start_y = y or self.y
         padding = self.style.padding
@@ -55,7 +74,15 @@ class PDF(FPDF):
         card_height = (len(items) * row_height) + 2 * padding
 
         self.set_fill_color(*self.style.card_background)
-        self.rect(start_x, start_y, width, card_height, style="F", round_corners=True, corner_radius=1.5)
+        self.rect(
+            start_x,
+            start_y,
+            width,
+            card_height,
+            style="F",
+            round_corners=True,
+            corner_radius=1.5,
+        )
         self.set_font(FONT_FAMILY, "", TEXT_SIZE)
         self.set_text_color(*self.style.font_color)
 
@@ -73,7 +100,9 @@ class PDF(FPDF):
             self.set_xy(start_x + width + padding, start_y)
         return start_x + width, start_y + card_height
 
-    def styled_table(self, headers: list[str], rows: list[tuple], col_widths: list[int]):
+    def styled_table(
+        self, headers: list[str], rows: list[tuple], col_widths: list[int]
+    ):
         font = self.style.font
         self.set_font(font.font_family, "B", font.table_header_size)
         self.set_fill_color(*self.style.table_header_color)
@@ -91,13 +120,17 @@ class PDF(FPDF):
             self.set_text_color(*self.style.font_color)
 
             for i, cell in enumerate(row):
-                self.cell(col_widths[i], font.table_content_size, cell, border="B", fill=True)
+                self.cell(
+                    col_widths[i], font.table_content_size, cell, border="B", fill=True
+                )
 
             self.ln()
         self.set_y(self.get_y() + self.style.margin)
 
     def tag(self, text, status: Status) -> Tuple[float, float]:
-        bg = self.style.status_colors.get(status, self.style.status_colors[Status.OTHER])
+        bg = self.style.status_colors.get(
+            status, self.style.status_colors[Status.OTHER]
+        )
         self.set_font(self.style.font.font_family, "", self.style.font.tag_size)
         self.set_text_color(*self.style.font_color)
 
@@ -106,7 +139,9 @@ class PDF(FPDF):
         x, y = self.get_x(), self.get_y()
 
         self.set_fill_color(*bg)
-        self.rect(x, y, text_w, text_h, style="F", round_corners=True, corner_radius=1.5)
+        self.rect(
+            x, y, text_w, text_h, style="F", round_corners=True, corner_radius=1.5
+        )
 
         self.set_xy(x + self.style.tag_padding - 1, y + 1)
         self.cell(text_w, text_h - self.style.tag_padding, text, border=0)
@@ -120,7 +155,9 @@ class PDF(FPDF):
         for t in tickets:
             self.ticket_card_long(t)
 
-    def ticket_card_long(self, ticket: Ticket, x: Optional[float] = None, y: Optional[float] = None):
+    def ticket_card_long(
+        self, ticket: Ticket, x: Optional[float] = None, y: Optional[float] = None
+    ):
         start_x = x or self.x
         start_y = y or self.y
         width = self.w - self.r_margin - self.l_margin
@@ -130,9 +167,19 @@ class PDF(FPDF):
 
         stripe_color = self.style.category_colors.get(ticket.category)
         self.set_fill_color(*stripe_color)
-        self.rect(start_x, start_y, 2.5, height, style="F", round_corners=True, corner_radius=3)
+        self.rect(
+            start_x,
+            start_y,
+            2.5,
+            height,
+            style="F",
+            round_corners=True,
+            corner_radius=3,
+        )
         self.set_draw_color(*self.style.border_color)
-        self.rect(start_x, start_y, width, height, round_corners=True, corner_radius=1.5)
+        self.rect(
+            start_x, start_y, width, height, round_corners=True, corner_radius=1.5
+        )
 
         self.set_xy(start_x + left_padding, start_y + top_padding)
 
@@ -159,7 +206,9 @@ class PDF(FPDF):
         self.set_xy(start_x + left_padding, self.get_y() + line_height + top_padding)
 
         self.set_font(FONT_FAMILY, "", 9)
-        self.cell(width - 12, 4, f"SP: {ticket.story_points}   Component: {ticket.component}")
+        self.cell(
+            width - 12, 4, f"SP: {ticket.story_points}   Component: {ticket.component}"
+        )
 
         self.set_y(start_y + height + self.style.padding)
 
@@ -182,10 +231,20 @@ class PDF(FPDF):
         x += spacing
 
         for index, value in enumerate(values):
-            self.set_fill_color(*self.style.chart_colors[index % len(self.style.chart_colors)])
+            self.set_fill_color(
+                *self.style.chart_colors[index % len(self.style.chart_colors)]
+            )
             bar_height = height * value / max_value
             y = start_y + height - bar_height
-            self.rect(x, y, bar_width, bar_height, style="F", round_corners=True, corner_radius=1.5)
+            self.rect(
+                x,
+                y,
+                bar_width,
+                bar_height,
+                style="F",
+                round_corners=True,
+                corner_radius=1.5,
+            )
             x += bar_width + spacing
 
         return x - spacing, start_y + height

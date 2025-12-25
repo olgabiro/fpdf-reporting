@@ -6,8 +6,9 @@ from fpdf import FPDF, XPos, YPos
 
 FONT_FAMILY = "Helvetica"  # Change this to Inter later
 
+
 class NotionPDF(FPDF):
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: object):
         super().__init__(**kwargs)
         self.set_auto_page_break(auto=True, margin=15)
 
@@ -33,12 +34,14 @@ class NotionPDF(FPDF):
         self.set_text_color(55, 53, 47)
         self.set_fill_color(*bg_color)
         # approximate rounded tag using cell
-        self.cell(self.get_string_width(text) + padding_x*2,
-                  6 + padding_y,
-                  text,
-                  border=0,
-                  ln=0,
-                  fill=True)
+        self.cell(
+            self.get_string_width(text) + padding_x * 2,
+            6 + padding_y,
+            text,
+            border=0,
+            ln=0,
+            fill=True,
+        )
 
     # Render Summary card style: light warm background + spacing
     def summary_card(self, items):
@@ -63,7 +66,6 @@ class NotionPDF(FPDF):
             self.set_text_color(55, 53, 47)
             self.cell(30, 6, value, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
-
         self.ln(6)
 
     # Notion-style table
@@ -79,10 +81,7 @@ class NotionPDF(FPDF):
 
         # rows
         self.set_font(FONT_FAMILY, "", 9)
-        row_colors = [
-            (255, 255, 255),
-            (250, 249, 247)
-        ]
+        row_colors = [(255, 255, 255), (250, 249, 247)]
 
         for idx, row in enumerate(rows):
             self.set_fill_color(*row_colors[idx % 2])
@@ -96,6 +95,7 @@ class NotionPDF(FPDF):
 
 # EXAMPLE USAGE --------------------------------------------------------------
 
+
 def generate_notion_pdf():
     pdf = NotionPDF()
     pdf.add_page()
@@ -104,8 +104,15 @@ def generate_notion_pdf():
     pdf.set_font(FONT_FAMILY, "B", 20)
     pdf.set_fill_color(247, 246, 243)  # warm gray
     pdf.set_text_color(55, 53, 47)
-    pdf.cell(0, 20, "Sprint 42 - JIRA Report", align="L", fill=True,
-             new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.cell(
+        0,
+        20,
+        "Sprint 42 - JIRA Report",
+        align="L",
+        fill=True,
+        new_x=XPos.LMARGIN,
+        new_y=YPos.NEXT,
+    )
 
     pdf.ln(4)
     pdf.divider()
@@ -116,7 +123,7 @@ def generate_notion_pdf():
         ("Total Tickets", "58"),
         ("Completed", "42"),
         ("In Progress", "10"),
-        ("Blocked", "6")
+        ("Blocked", "6"),
     ]
 
     pdf.summary_card(summary_data)

@@ -1,24 +1,25 @@
 # Notion-style PDF Report Template using FPDF2 (updated with rounded tags + Notion-colored status tags)
 # You can replace FONT_FAMILY = "Helvetica" with "Inter" (or any other)
 # once you add the font via pdf.add_font().
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 from fpdf import FPDF, XPos, YPos
 
 FONT_FAMILY = "Helvetica"  # Change this to Inter later
 
 NOTION_COLORS = [
-    (212/255, 228/255, 247/255),
-    (255/255, 232/255, 163/255),
-    (252/255, 216/255, 212/255),
-    (217/255, 241/255, 208/255),
-    (155/255, 207/255, 87/255),   # green
-    (246/255, 199/255, 68/255),   # yellow
-    (108/255, 155/255, 245/255),  # blue
-    (221/255, 148/255, 255/255),  # purple
-    (255/255, 170/255, 153/255),  # coral
-    (181/255, 181/255, 181/255),  # gray
+    (212 / 255, 228 / 255, 247 / 255),
+    (255 / 255, 232 / 255, 163 / 255),
+    (252 / 255, 216 / 255, 212 / 255),
+    (217 / 255, 241 / 255, 208 / 255),
+    (155 / 255, 207 / 255, 87 / 255),  # green
+    (246 / 255, 199 / 255, 68 / 255),  # yellow
+    (108 / 255, 155 / 255, 245 / 255),  # blue
+    (221 / 255, 148 / 255, 255 / 255),  # purple
+    (255 / 255, 170 / 255, 153 / 255),  # coral
+    (181 / 255, 181 / 255, 181 / 255),  # gray
 ]
+
 
 def make_pie_chart(title, data_pairs, outfile):
     """
@@ -31,10 +32,7 @@ def make_pie_chart(title, data_pairs, outfile):
     fig.patch.set_facecolor("white")
 
     wedges, _ = ax.pie(
-        sizes,
-        colors=NOTION_COLORS[:len(labels)],
-        startangle=90,
-        counterclock=False
+        sizes, colors=NOTION_COLORS[: len(labels)], startangle=90, counterclock=False
     )
 
     # Adding data labels directly on slices
@@ -42,14 +40,7 @@ def make_pie_chart(title, data_pairs, outfile):
         ang = (w.theta2 + w.theta1) / 2
         x = np.cos(np.deg2rad(ang))
         y = np.sin(np.deg2rad(ang))
-        ax.text(
-            x * 0.6,
-            y * 0.6,
-            f"{sizes[i]}",
-            ha="center",
-            va="center",
-            fontsize=10
-        )
+        ax.text(x * 0.6, y * 0.6, f"{sizes[i]}", ha="center", va="center", fontsize=10)
 
     ax.set_title(title, fontsize=12)
     ax.axis("equal")
@@ -57,13 +48,14 @@ def make_pie_chart(title, data_pairs, outfile):
     plt.savefig(outfile, dpi=200, bbox_inches="tight")
     plt.close(fig)
 
+
 class NotionPDF(FPDF):
     TAG_COLORS = {
-        "Done": (217, 241, 208),        # green
-        "In Progress": (255, 232, 163), # yellow
-        "Blocked": (252, 216, 212),     # red
-        "Review": (212, 228, 247),      # blue
-        "Default": (227, 226, 224)      # neutral gray
+        "Done": (217, 241, 208),  # green
+        "In Progress": (255, 232, 163),  # yellow
+        "Blocked": (252, 216, 212),  # red
+        "Review": (212, 228, 247),  # blue
+        "Default": (227, 226, 224),  # neutral gray
     }
 
     def __init__(self, **kwargs):
@@ -87,6 +79,7 @@ class NotionPDF(FPDF):
         self.ln(1)
 
         # Notion-like rounded tag using rounded rectangles
+
     def tag(self, text, status="Default"):
         bg = self.TAG_COLORS.get(status, self.TAG_COLORS["Default"])
         self.set_font(FONT_FAMILY, "", 9)
@@ -98,13 +91,14 @@ class NotionPDF(FPDF):
 
         # Draw rounded rectangle
         self.set_fill_color(*bg)
-        self.rect(x, y, text_w, text_h, style="F", round_corners=True, corner_radius=1.5)
+        self.rect(
+            x, y, text_w, text_h, style="F", round_corners=True, corner_radius=1.5
+        )
 
         # Print text
         self.set_xy(x + 2, y + 1)
         self.cell(text_w, text_h - 2, text, border=0)
         self.set_xy(x + text_w, y)  # end cell
-
 
     def summary_card(self, items):
         self.set_fill_color(247, 246, 243)
@@ -133,7 +127,6 @@ class NotionPDF(FPDF):
             self.cell(10, 6, value, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
             self.set_x(15)
 
-
         self.ln(6)
 
     # Notion-style table
@@ -149,10 +142,7 @@ class NotionPDF(FPDF):
 
         # rows
         self.set_font(FONT_FAMILY, "", 9)
-        row_colors = [
-            (255, 255, 255),
-            (250, 249, 247)
-        ]
+        row_colors = [(255, 255, 255), (250, 249, 247)]
 
         for idx, row in enumerate(rows):
             self.set_fill_color(*row_colors[idx % 2])
@@ -201,15 +191,17 @@ class NotionPDF(FPDF):
 
             # Category-colored left stripe
             cat_colors = {
-                "committed": (217, 241, 208),      # green
-                "nice to have": (255, 232, 163),   # yellow
-                "maybe": (212, 228, 247),          # blue
-                None: (227, 226, 224)               # neutral gray
+                "committed": (217, 241, 208),  # green
+                "nice to have": (255, 232, 163),  # yellow
+                "maybe": (212, 228, 247),  # blue
+                None: (227, 226, 224),  # neutral gray
             }
             stripe_color = cat_colors.get(category, (227, 226, 224))
 
             self.set_fill_color(*stripe_color)
-            self.rect(box_x, box_y, 3, h, style="F", round_corners=True, corner_radius=5)
+            self.rect(
+                box_x, box_y, 3, h, style="F", round_corners=True, corner_radius=5
+            )
 
             # Flagged tickets get a red left border highlight
             if flagged:
@@ -237,9 +229,9 @@ class NotionPDF(FPDF):
 
             # Priority indicator
             pri_colors = {
-                "High": (252, 216, 212),   # red
-                "Medium": (255, 232, 163), # yellow
-                "Low": (217, 241, 208)     # green
+                "High": (252, 216, 212),  # red
+                "Medium": (255, 232, 163),  # yellow
+                "Low": (217, 241, 208),  # green
             }
             dot_color = pri_colors.get(priority, (227, 226, 224))
             dot_x = self.get_x() + 2
@@ -254,12 +246,15 @@ class NotionPDF(FPDF):
 
             # Summary + Story Points + Component
             self.set_font(FONT_FAMILY, "", 9)
-            self.multi_cell(w - 12, 4, f"{summary} SP: {story_points}   Component: {component}")
+            self.multi_cell(
+                w - 12, 4, f"{summary} SP: {story_points}   Component: {component}"
+            )
 
             self.ln(5)
 
 
 # EXAMPLE USAGE --------------------------------------------------------------
+
 
 def generate_notion_pdf():
     pdf = NotionPDF()
@@ -269,8 +264,15 @@ def generate_notion_pdf():
     pdf.set_font(FONT_FAMILY, "B", 20)
     pdf.set_fill_color(247, 246, 243)  # warm gray
     pdf.set_text_color(55, 53, 47)
-    pdf.cell(0, 20, "Sprint 42 - JIRA Report", align="L", fill=True,
-             new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.cell(
+        0,
+        20,
+        "Sprint 42 - JIRA Report",
+        align="L",
+        fill=True,
+        new_x=XPos.LMARGIN,
+        new_y=YPos.NEXT,
+    )
 
     pdf.ln(4)
     pdf.divider()
@@ -281,7 +283,7 @@ def generate_notion_pdf():
         ("Total Tickets", "58"),
         ("Completed", "42"),
         ("In Progress", "10"),
-        ("Blocked", "6")
+        ("Blocked", "6"),
     ]
 
     pdf.summary_card(summary_data)
@@ -306,25 +308,34 @@ def generate_notion_pdf():
         transformed_rows.append((key, summary, status, assignee))
     pdf.table(headers, transformed_rows, col_widths)
 
-
     pdf.ln(6)
     pdf.section_title("Detailed Tickets")
-    pdf.detailed_tickets_table([
-        {}, {
-        "key": "PROJ-104",
-        "summary": "longer summary here",
-        "status": "Review",
-        "issue_type": "Feature",
-        "priority": "High",
-        "story_points": 2,
-        "category": "nice to have",
-        "flagged": True
-    }])
+    pdf.detailed_tickets_table(
+        [
+            {},
+            {
+                "key": "PROJ-104",
+                "summary": "longer summary here",
+                "status": "Review",
+                "issue_type": "Feature",
+                "priority": "High",
+                "story_points": 2,
+                "category": "nice to have",
+                "flagged": True,
+            },
+        ]
+    )
 
     pdf.section_title("Story Points Distribution")
 
-    make_pie_chart("Categories", [("Committed", 12), ("Maybe", 5), ("None", 2)], "category_chart.png")
-    make_pie_chart("Priorities", [("High", 10), ("Medium", 20), ("Low", 30)], "priority_chart.png")
+    make_pie_chart(
+        "Categories",
+        [("Committed", 12), ("Maybe", 5), ("None", 2)],
+        "category_chart.png",
+    )
+    make_pie_chart(
+        "Priorities", [("High", 10), ("Medium", 20), ("Low", 30)], "priority_chart.png"
+    )
     chart_width = 40  # mm
     pdf.image("category_chart.png", x=pdf.get_x(), y=pdf.get_y(), w=chart_width)
     pdf.set_x(pdf.get_x() + chart_width + 10)
@@ -337,7 +348,6 @@ def generate_notion_pdf():
     pdf.cell(chart_width, 6, "Story Points by Category", align="C")
 
     pdf.output("notion_improved_report.pdf")
-
 
 
 if __name__ == "__main__":

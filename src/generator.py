@@ -14,7 +14,7 @@ def get_summary_data():
         ("Total Tickets", "58"),
         ("Completed", "42"),
         ("In Progress", "10"),
-        ("Blocked", "6")
+        ("Blocked", "6"),
     ]
 
 
@@ -33,7 +33,15 @@ def generate_minimalist():
 
     pdf.set_fill_color(45, 62, 80)  # dark blue-gray
     pdf.set_text_color(255, 255, 255)
-    pdf.cell(0, 20, "Sprint 42 - JIRA Report", align="C", fill=True, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.cell(
+        0,
+        20,
+        "Sprint 42 - JIRA Report",
+        align="C",
+        fill=True,
+        new_x=XPos.LMARGIN,
+        new_y=YPos.NEXT,
+    )
 
     pdf.ln(8)
 
@@ -82,8 +90,15 @@ def generate_stripe_style():
     pdf.set_font("Helvetica", "B", 20)
     pdf.set_fill_color(10, 37, 64)  # deep navy
     pdf.set_text_color(255, 255, 255)
-    pdf.cell(0, 20, "Sprint 42 - JIRA Report", align="C",
-             fill=True, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.cell(
+        0,
+        20,
+        "Sprint 42 - JIRA Report",
+        align="C",
+        fill=True,
+        new_x=XPos.LMARGIN,
+        new_y=YPos.NEXT,
+    )
 
     pdf.ln(8)
 
@@ -118,7 +133,7 @@ def generate_stripe_style():
     pdf.set_font("Helvetica", "", 9)
     row_colors = [
         (255, 255, 255),  # white
-        (242, 245, 252)  # subtle stripe tint
+        (242, 245, 252),  # subtle stripe tint
     ]
     row_index = 0
 
@@ -141,12 +156,13 @@ def generate_notion_style():
     pdf.set_text_color(55, 53, 47)  # Notion dark gray
     pdf.set_font("Helvetica", "B", 20)
     pdf.cell(
-        0, 20,
+        0,
+        20,
         "Sprint 42 - JIRA Report",
         align="L",
         fill=True,
         new_x=XPos.LMARGIN,
-        new_y=YPos.NEXT
+        new_y=YPos.NEXT,
     )
 
     pdf.ln(4)
@@ -184,7 +200,7 @@ def generate_notion_style():
     # Notion-like alternating row colors (just barely noticeable)
     row_colors = [
         (255, 255, 255),  # pure white
-        (250, 249, 247)  # faint warm beige tint
+        (250, 249, 247),  # faint warm beige tint
     ]
 
     row_index = 0
@@ -193,12 +209,7 @@ def generate_notion_style():
         pdf.set_text_color(55, 53, 47)
 
         for i, cell in enumerate(row):
-            pdf.cell(
-                col_widths[i], 8,
-                cell,
-                border="B",
-                fill=True
-            )
+            pdf.cell(col_widths[i], 8, cell, border="B", fill=True)
 
         pdf.ln(8)
         row_index += 1

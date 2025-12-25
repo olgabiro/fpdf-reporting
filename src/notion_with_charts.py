@@ -2,17 +2,22 @@
 # You can replace FONT_FAMILY = "Helvetica" with "Inter" (or any other)
 # once you add the font via pdf.add_font().
 
+from io import BytesIO
+
+import matplotlib.pyplot as plt
+import numpy as np
 from fpdf import FPDF, XPos, YPos
 
 FONT_FAMILY = "Helvetica"  # Change this to Inter later
 
+
 class NotionPDF(FPDF):
     TAG_COLORS = {
-        "Done": (217, 241, 208),        # green
-        "In Progress": (255, 232, 163), # yellow
-        "Blocked": (252, 216, 212),     # red
-        "Review": (212, 228, 247),      # blue
-        "Default": (227, 226, 224)      # neutral gray
+        "Done": (217, 241, 208),  # green
+        "In Progress": (255, 232, 163),  # yellow
+        "Blocked": (252, 216, 212),  # red
+        "Review": (212, 228, 247),  # blue
+        "Default": (227, 226, 224),  # neutral gray
     }
 
     def __init__(self, **kwargs):
@@ -36,6 +41,7 @@ class NotionPDF(FPDF):
         self.ln(1)
 
         # Notion-like rounded tag using rounded rectangles
+
     def tag(self, text, status="Default"):
         bg = self.TAG_COLORS.get(status, self.TAG_COLORS["Default"])
         self.set_font(FONT_FAMILY, "", 9)
@@ -90,10 +96,7 @@ class NotionPDF(FPDF):
 
         # rows
         self.set_font(FONT_FAMILY, "", 9)
-        row_colors = [
-            (255, 255, 255),
-            (250, 249, 247)
-        ]
+        row_colors = [(255, 255, 255), (250, 249, 247)]
 
         for idx, row in enumerate(rows):
             self.set_fill_color(*row_colors[idx % 2])
@@ -103,7 +106,6 @@ class NotionPDF(FPDF):
                 self.cell(col_widths[i], 8, cell, border="B", fill=True)
 
             self.ln(8)
-
 
     # ------------------------------------------------------------------
     # Detailed Tickets Table (Notion-style rich row visualization)
@@ -143,10 +145,10 @@ class NotionPDF(FPDF):
 
             # Category-colored left stripe
             cat_colors = {
-                "committed": (217, 241, 208),      # green
-                "nice to have": (255, 232, 163),   # yellow
-                "maybe": (212, 228, 247),          # blue
-                None: (227, 226, 224)               # neutral gray
+                "committed": (217, 241, 208),  # green
+                "nice to have": (255, 232, 163),  # yellow
+                "maybe": (212, 228, 247),  # blue
+                None: (227, 226, 224),  # neutral gray
             }
             stripe_color = cat_colors.get(category, (227, 226, 224))
 
@@ -180,9 +182,9 @@ class NotionPDF(FPDF):
 
             # Priority indicator
             pri_colors = {
-                "High": (252, 216, 212),   # red
-                "Medium": (255, 232, 163), # yellow
-                "Low": (217, 241, 208)     # green
+                "High": (252, 216, 212),  # red
+                "Medium": (255, 232, 163),  # yellow
+                "Low": (217, 241, 208),  # green
             }
             dot_color = pri_colors.get(priority, (227, 226, 224))
             dot_x = self.get_x() + 2
@@ -197,11 +199,15 @@ class NotionPDF(FPDF):
 
             # Summary + Story Points + Component
             self.set_font(FONT_FAMILY, "", 9)
-            self.multi_cell(w - 12, 4, f"{summary} SP: {story_points}   Component: {component}")
+            self.multi_cell(
+                w - 12, 4, f"{summary} SP: {story_points}   Component: {component}"
+            )
 
             self.ln(4)
 
+
 # EXAMPLE USAGE --------------------------------------------------------------
+
 
 def generate_notion_pdf():
     pdf = NotionPDF()
@@ -211,8 +217,15 @@ def generate_notion_pdf():
     pdf.set_font(FONT_FAMILY, "B", 20)
     pdf.set_fill_color(247, 246, 243)  # warm gray
     pdf.set_text_color(55, 53, 47)
-    pdf.cell(0, 20, "Sprint 42 - JIRA Report", align="L", fill=True,
-             new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.cell(
+        0,
+        20,
+        "Sprint 42 - JIRA Report",
+        align="L",
+        fill=True,
+        new_x=XPos.LMARGIN,
+        new_y=YPos.NEXT,
+    )
 
     pdf.ln(4)
     pdf.divider()
@@ -223,7 +236,7 @@ def generate_notion_pdf():
         ("Total Tickets", "58"),
         ("Completed", "42"),
         ("In Progress", "10"),
-        ("Blocked", "6")
+        ("Blocked", "6"),
     ]
 
     pdf.summary_card(summary_data)
@@ -255,19 +268,17 @@ def generate_notion_pdf():
 # Charting subsystem (matplotlib, in-memory PNGs)
 # -------------------------
 
-import matplotlib.pyplot as plt
-import numpy as np
-from io import BytesIO
 
 # Notion-like palette for charts (normalized for matplotlib)
 NOTION_CHART_COLORS = [
-    (155/255, 207/255, 87/255),   # green
-    (246/255, 199/255, 68/255),   # yellow
-    (108/255, 155/255, 245/255),  # blue
-    (221/255, 148/255, 255/255),  # purple
-    (255/255, 170/255, 153/255),  # coral
-    (181/255, 181/255, 181/255),  # gray
+    (155 / 255, 207 / 255, 87 / 255),  # green
+    (246 / 255, 199 / 255, 68 / 255),  # yellow
+    (108 / 255, 155 / 255, 245 / 255),  # blue
+    (221 / 255, 148 / 255, 255 / 255),  # purple
+    (255 / 255, 170 / 255, 153 / 255),  # coral
+    (181 / 255, 181 / 255, 181 / 255),  # gray
 ]
+
 
 @staticmethod
 def build_pie_chart_bytes(title, data_pairs, size_inch=2.4):  # smaller charts
@@ -296,7 +307,7 @@ def build_pie_chart_bytes(title, data_pairs, size_inch=2.4):  # smaller charts
             sizes,
             colors=colors,
             startangle=90,
-            counterclock=False  # full pie (no donut)
+            counterclock=False,  # full pie (no donut)
         )
 
         # Put numeric labels inside slices when large enough, otherwise external
@@ -313,16 +324,21 @@ def build_pie_chart_bytes(title, data_pairs, size_inch=2.4):  # smaller charts
         # ax.axis("equal")
 
     buf = BytesIO()
-    plt.savefig(buf, format="png", dpi=200, bbox_inches="tight", facecolor=fig.get_facecolor())
+    plt.savefig(
+        buf, format="png", dpi=200, bbox_inches="tight", facecolor=fig.get_facecolor()
+    )
     plt.close(fig)
     buf.seek(0)
     return buf
+
 
 # Attach staticmethod to class
 NotionPDF.build_pie_chart_bytes = build_pie_chart_bytes
 
 
-def add_pie_chart(self, title, data_pairs, max_width_mm=70, size_inch=2.4, caption=None, legend=True):  # smaller charts(self, title, data_pairs, max_width_mm=90, size_inch=3, caption=None, legend=True):(self, title, data_pairs, max_width_mm=90, size_inch=3, caption=None):
+def add_pie_chart(
+    self, title, data_pairs, max_width_mm=70, size_inch=2.4, caption=None, legend=True
+):  # smaller charts(self, title, data_pairs, max_width_mm=90, size_inch=3, caption=None, legend=True):(self, title, data_pairs, max_width_mm=90, size_inch=3, caption=None):
     """Generate a pie chart in-memory and insert it into the PDF.
 
     - max_width_mm: how wide the chart should be on the page (mm)
@@ -341,6 +357,7 @@ def add_pie_chart(self, title, data_pairs, max_width_mm=70, size_inch=2.4, capti
     except Exception:
         # Fallback: write to a temporary file and use that (rare environments)
         import tempfile
+
         tmp = tempfile.NamedTemporaryFile(suffix=".png", delete=False)
         tmp.write(img_buf.getbuffer())
         tmp.flush()
@@ -406,7 +423,7 @@ def add_pie_chart(self, title, data_pairs, max_width_mm=70, size_inch=2.4, capti
 
     # move cursor below legend
     self.ln(4)
-    self.set_x(self.l_margin) # reset X to original and move down by image height
+    self.set_x(self.l_margin)  # reset X to original and move down by image height
     # approximate height from width using square aspect
     img_h_mm = max_width_mm  # approximate for square charts
     self.set_xy(x, y + img_h_mm + 2)
@@ -415,11 +432,14 @@ def add_pie_chart(self, title, data_pairs, max_width_mm=70, size_inch=2.4, capti
     #     self.set_text_color(90, 90, 90)
     #     self.cell(max_width_mm, 6, caption, align="C")
 
+
 # bind to class
 NotionPDF.add_pie_chart = add_pie_chart
 
 
-def add_multiple_pie_charts(self, charts, per_row=2, chart_width=50, h_spacing=45, v_spacing=16, size_inch=3):
+def add_multiple_pie_charts(
+    self, charts, per_row=2, chart_width=50, h_spacing=45, v_spacing=16, size_inch=3
+):
     """Add several pie charts.
 
     charts: list of (title, data_pairs)
@@ -427,8 +447,6 @@ def add_multiple_pie_charts(self, charts, per_row=2, chart_width=50, h_spacing=4
     chart_width: width per chart in mm
     h_spacing, v_spacing: spacing in mm
     """
-    page_width = self.w - self.l_margin - self.r_margin
-    usable = page_width
 
     x_start = self.get_x()
     y = self.get_y()
@@ -448,12 +466,15 @@ def add_multiple_pie_charts(self, charts, per_row=2, chart_width=50, h_spacing=4
 
         self.set_xy(x, y)
         caption = title
-        self.add_pie_chart(title, pairs, max_width_mm=chart_width, size_inch=size_inch, caption=caption)
+        self.add_pie_chart(
+            title, pairs, max_width_mm=chart_width, size_inch=size_inch, caption=caption
+        )
 
     # move cursor below the charts
     final_row_count = (len(charts) + per_row - 1) // per_row
     self.set_y(y + final_row_count * (chart_width + v_spacing))
     self.set_x(self.l_margin)
+
 
 # bind to class
 NotionPDF.add_multiple_pie_charts = add_multiple_pie_charts
@@ -469,8 +490,14 @@ if __name__ == "__main__":
     pdf.add_page()
 
     charts = [
-        ("Story Points by Category", [("Committed", 12), ("Nice to have", 5), ("Maybe", 2)]),
-        ("Story Points by Component", [("Platform", 20), ("Strategic", 6), ("Infra", 3)]),
+        (
+            "Story Points by Category",
+            [("Committed", 12), ("Nice to have", 5), ("Maybe", 2)],
+        ),
+        (
+            "Story Points by Component",
+            [("Platform", 20), ("Strategic", 6), ("Infra", 3)],
+        ),
         ("Story Points by Priority", [("High", 10), ("Medium", 12), ("Low", 7)]),
     ]
 

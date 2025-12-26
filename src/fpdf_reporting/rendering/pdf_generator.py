@@ -284,7 +284,7 @@ class PDF(FPDF):
             self.set_font(FONT_FAMILY, "", 9)
             legend_colors = self.style.chart_colors
             for idx, (label, val) in enumerate(data.items()):
-                color = legend_colors[len(legend_colors) % idx]
+                color = legend_colors[idx % len(legend_colors)]
 
                 self.set_xy(legend_x, legend_y)
                 self.set_fill_color(*color)

@@ -118,3 +118,10 @@ def test_ticket_card_long(pdf: PDF):
     assert pdf.font_size_pt == 9
     assert pdf.get_x() == 25
     assert pdf.get_y() == 25 + 22 + 5
+
+def test_pie_chart(pdf: PDF, data: dict[str, float]):
+    pdf.pie_chart(data)
+    assert pdf.font_family == "helvetica"
+    assert pdf.font_size_pt == 9
+    assert pdf.get_x() == 25
+    assert pdf.get_y() == 59

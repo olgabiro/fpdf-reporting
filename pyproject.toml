@@ -61,7 +61,7 @@ testpaths = ["tests"]
 [tool.coverage.run]
 omit = [
     "*/__init__.py",
-    "fpdf_reporting/cli.py",
+    "cli.py",
 ]
 branch = true
 source = ["fpdf_reporting"]

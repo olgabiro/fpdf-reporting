@@ -1,7 +1,7 @@
 import pytest
-from model.style import NotionStyle
-from rendering.graphs import build_pie_chart_bytes
-from rendering.pdf_generator import PDF
+from fpdf_reporting.model.style import NotionStyle
+from fpdf_reporting.rendering.graphs import build_pie_chart_bytes
+from fpdf_reporting.rendering.pdf_generator import PDF
 
 
 @pytest.fixture

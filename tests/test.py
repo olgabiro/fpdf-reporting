@@ -1,7 +1,7 @@
 import pytest
-from model.style import NotionStyle
-from model.ticket import Category, Status, Ticket
-from rendering.pdf_generator import PDF
+from fpdf_reporting.model.style import NotionStyle
+from fpdf_reporting.model.ticket import Category, Status, Ticket
+from fpdf_reporting.rendering.pdf_generator import PDF
 
 DARK_BACKGROUND = (38, 33, 43)
 

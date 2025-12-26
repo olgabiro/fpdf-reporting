@@ -1,6 +1,6 @@
 import pytest
 
-from model.ticket import Status, Ticket
+from fpdf_reporting.model.ticket import Status, Ticket
 
 
 @pytest.fixture

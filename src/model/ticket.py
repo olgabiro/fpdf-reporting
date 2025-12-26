@@ -1,7 +1,7 @@
 from dataclasses import dataclass
+from datetime import datetime
 from enum import StrEnum
 from typing import Optional
-from unicodedata import category
 
 
 class Category(StrEnum):
@@ -26,18 +26,14 @@ class Ticket:
     summary: str
     status: Status
     issue_type: str
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
+    due_date: Optional[datetime] = None
     flagged: bool = False
     priority: Optional[str] = None
-    story_points: Optional[float] = None
+    story_points: Optional[int] = None
     tester_story_points: Optional[float] = None
     component: Optional[str] = None
     developer: Optional[str] = None
+    assignee: Optional[str] = None
     category: Optional[Category] = None
-
-    def __post_init__(self) -> None:
-        if isinstance(self.category, str):
-            typed_category = Category(self.category)
-            self.category = typed_category
-        if isinstance(self.status, str):
-            typed_status = Status(self.status)
-            self.status = typed_status

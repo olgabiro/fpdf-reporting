@@ -22,7 +22,9 @@ NOTION_COLORS = [
 ]
 
 
-def make_pie_chart(title: str, data_pairs: list[tuple[str, float]], outfile: str) -> None:
+def make_pie_chart(
+    title: str, data_pairs: list[tuple[str, float]], outfile: str
+) -> None:
     """
     data_pairs = [("Committed", 12), ("Maybe", 5), ("None", 2)]
     """
@@ -127,7 +129,12 @@ class NotionPDF(FPDF):
         self.ln(6)
 
     # Notion-style table
-    def notion_table(self, headers: list[str], rows: list[tuple[str, str, str, str]], col_widths: list[int]) -> None:
+    def notion_table(
+        self,
+        headers: list[str],
+        rows: list[tuple[str, str, str, str]],
+        col_widths: list[int],
+    ) -> None:
         # header background
         self.set_font(FONT_FAMILY, "B", 11)
         self.set_fill_color(243, 242, 239)
@@ -154,7 +161,9 @@ class NotionPDF(FPDF):
     # Detailed Tickets Table (Notion-style rich row visualization)
     # ------------------------------------------------------------------
 
-    def detailed_tickets_table(self, tickets: list[dict[str, str | bool | int]]) -> None:
+    def detailed_tickets_table(
+        self, tickets: list[dict[str, str | bool | int]]
+    ) -> None:
         """
         Render a detailed list of tickets with:
         - Key

@@ -8,7 +8,6 @@ FONT_FAMILY = "Helvetica"  # Change this to Inter later
 
 
 class NotionPDF(FPDF):
-
     # Utility: draw a subtle Notion divider
     def divider(self, y_offset: float = 4) -> None:
         self.ln(y_offset)
@@ -26,11 +25,13 @@ class NotionPDF(FPDF):
         self.ln(1)
 
     # Notion-like tag (rounded background)
-    def tag(self,
-            text: str,
-            bg_color: tuple[int, int, int] = (217, 241, 208),
-            padding_x: float = 2,
-            padding_y: float = 1) -> None:
+    def tag(
+        self,
+        text: str,
+        bg_color: tuple[int, int, int] = (217, 241, 208),
+        padding_x: float = 2,
+        padding_y: float = 1,
+    ) -> None:
         self.set_font(FONT_FAMILY, "", 9)
         self.set_text_color(55, 53, 47)
         self.set_fill_color(*bg_color)
@@ -70,10 +71,12 @@ class NotionPDF(FPDF):
         self.ln(6)
 
     # Notion-style table
-    def formatted_table(self,
-                        headers: list[str],
-                        rows: list[tuple[str, str, str, str]],
-                        col_widths: list[int]) -> None:
+    def formatted_table(
+        self,
+        headers: list[str],
+        rows: list[tuple[str, str, str, str]],
+        col_widths: list[int],
+    ) -> None:
         # header background
         self.set_font(FONT_FAMILY, "B", 11)
         self.set_fill_color(243, 242, 239)
@@ -98,6 +101,7 @@ class NotionPDF(FPDF):
 
 
 # EXAMPLE USAGE --------------------------------------------------------------
+
 
 def generate_notion_pdf() -> None:
     pdf = NotionPDF()

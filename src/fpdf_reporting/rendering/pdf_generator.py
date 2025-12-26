@@ -10,6 +10,7 @@ HEADER_SIZE: int = 20
 SECTION_TITLE_SIZE: int = 13
 TEXT_SIZE: int = 10
 LABEL_SIZE: int = 7
+MARGIN_SIZE: int = 25
 
 _SMALL_SPACING: float = 2
 _MEDIUM_SPACING: float = 5
@@ -29,7 +30,7 @@ class PDF(FPDF):
     def __init__(self, style: Style, **kwargs: Any) -> None:
         super().__init__(**kwargs)
         self.style = style
-        self.set_margin(25)
+        self.set_margin(MARGIN_SIZE)
 
     def document_header(self, text: str, centered: bool = False) -> None:
         self.set_font(FONT_FAMILY, "B", size=HEADER_SIZE)
@@ -62,7 +63,7 @@ class PDF(FPDF):
         self.set_font(FONT_FAMILY, "B", SECTION_TITLE_SIZE)
         self.set_text_color(*self.style.section_title_color)
         self.cell(0, 10, text, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-        self.ln(1)
+        self.set_xy(self.get_x(), self.get_y() + _LARGE_SPACING)
 
     def summary_card(
         self,

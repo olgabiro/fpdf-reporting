@@ -1,4 +1,5 @@
 import pytest
+
 from fpdf_reporting.model.style import NotionStyle
 from fpdf_reporting.model.ticket import Category, Status, Ticket
 from fpdf_reporting.rendering.pdf_generator import PDF

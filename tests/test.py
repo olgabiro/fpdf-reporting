@@ -1,10 +1,10 @@
 import pytest
-
 from model.style import NotionStyle
 from model.ticket import Category, Status, Ticket
 from rendering.pdf_generator import PDF
 
 DARK_BACKGROUND = (38, 33, 43)
+
 
 @pytest.mark.skip(reason="Manually run")
 def test():

@@ -2,8 +2,8 @@ from typing import Any, List, Optional, Tuple
 
 from fpdf import FPDF, XPos, YPos
 
-from model.style import Style
-from model.ticket import Status, Ticket
+from fpdf_reporting.model.style import Style
+from fpdf_reporting.model.ticket import Status, Ticket
 
 FONT_FAMILY: str = "Helvetica"
 HEADER_SIZE: int = 20

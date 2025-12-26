@@ -24,10 +24,9 @@ dev = [
 ]
 
 [project.scripts]
-#lint = "ruff check ."
-#format = "ruff format ."
-#typecheck = "mypy pdf_reporting/"
-#test = "pytest"
+lint = "fpdf_reporting.cli:lint"
+format = "fpdf_reporting.cli:format"
+typecheck = "fpdf_reporting.cli:typecheck"
 
 [tool.ruff]
 line-length = 88
@@ -45,6 +44,8 @@ ignore = ["E501"]
 [tool.mypy]
 python_version = "3.14"
 strict = true
+mypy_path = ["src"]
+explicit_package_bases = true
 exclude = "tests/"
 
 [tool.setuptools]
@@ -54,15 +55,16 @@ package-dir = {"" = "src"}
 where = ["src"]
 
 [tool.pytest.ini_options]
-addopts = "--cov=src --cov-report=term-missing"
+addopts = "--cov=fpdf_reporting --cov-report=term-missing"
 testpaths = ["tests"]
 
 [tool.coverage.run]
 omit = [
-    "*/__init__.py"
+    "*/__init__.py",
+    "fpdf_reporting/cli.py",
 ]
 branch = true
-source = ["src"]
+source = ["fpdf_reporting"]
 
 [tool.coverage.report]
 show_missing = true

@@ -1,4 +1,4 @@
-from model.ticket import Category, Ticket
+from fpdf_reporting.model.ticket import Category, Ticket
 
 
 class ReportData:

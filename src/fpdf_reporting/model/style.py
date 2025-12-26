@@ -1,6 +1,6 @@
 from typing import Optional, Tuple
 
-from model.ticket import Category, Status
+from fpdf_reporting.model.ticket import Category, Status
 
 
 class Style:

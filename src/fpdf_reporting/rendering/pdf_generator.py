@@ -40,6 +40,11 @@ class PDF(FPDF):
         self.add_font(FONT_FAMILY, "B", OUTPUT_DIR / "Inter-Bold.ttf")
         self.add_font(FONT_FAMILY, "I", OUTPUT_DIR / "Inter-Italic.ttf")
 
+    def footer(self):
+        self.set_y(-15)
+        self.set_font(FONT_FAMILY, "I", 8)
+        self.cell(0, 10, f"Page {self.page_no()}", align="C")
+
     def document_header(self, text: str, centered: bool = False) -> None:
         self.set_font(FONT_FAMILY, "B", size=HEADER_SIZE)
         self.set_fill_color(*self.style.header_background)  # warm gray

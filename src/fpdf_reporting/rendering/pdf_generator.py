@@ -67,11 +67,11 @@ class PDF(FPDF):
         self.set_xy(self.get_x(), self.get_y() + _LARGE_SPACING)
 
     def summary_card(
-            self,
-            items: List[str],
-            width: int = 80,
-            x: Optional[float] = None,
-            y: Optional[float] = None,
+        self,
+        items: List[str],
+        width: int = 80,
+        x: Optional[float] = None,
+        y: Optional[float] = None,
     ) -> tuple[float, float]:
         start_x = x or self.x
         start_y = y or self.y
@@ -107,10 +107,10 @@ class PDF(FPDF):
         return start_x + width, start_y + card_height
 
     def styled_table(
-            self,
-            headers: list[str],
-            rows: list[tuple[str, str, str, str]],
-            col_widths: list[int],
+        self,
+        headers: list[str],
+        rows: list[tuple[str, str, str, str]],
+        col_widths: list[int],
     ) -> None:
         self.set_font(FONT_FAMILY, "B", TEXT_SIZE)
         self.set_fill_color(*self.style.table_header_color)
@@ -161,7 +161,7 @@ class PDF(FPDF):
             self.ticket_card_long(t)
 
     def ticket_card_long(
-            self, ticket: Ticket, x: Optional[float] = None, y: Optional[float] = None
+        self, ticket: Ticket, x: Optional[float] = None, y: Optional[float] = None
     ) -> None:
         start_x = x or self.x
         start_y = y or self.y
@@ -259,22 +259,24 @@ class PDF(FPDF):
         return x - spacing, start_y + height
 
     def pie_chart(
-            self,
-            data: dict[str, float],
-            width: float = 70,
-            caption: Optional[str] = None,
-            legend: bool = True,
+        self,
+        data: dict[str, float],
+        width: float = 70,
+        caption: Optional[str] = None,
+        legend: bool = True,
     ) -> None:
-        """Generate a pie chart in-memory and insert it into the PDF.
-        """
-        img_buf = build_pie_chart_bytes(list(data.values()))
+        """Generate a pie chart in-memory and insert it into the PDF."""
+        img_buf = build_pie_chart_bytes(
+            list(data.values()), colors=self.style.chart_colors
+        )
 
-        # X/Y position calculations
+        if img_buf is None:
+            return
+
         x = self.get_x()
         y = self.get_y()
 
         self.image(img_buf, x=x, y=y, w=width)
-
         self.set_xy(x + width, y)
 
         legend_x = x + width + _MEDIUM_SPACING

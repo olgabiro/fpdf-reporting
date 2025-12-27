@@ -7,7 +7,7 @@ from fpdf_reporting.rendering.pdf_generator import PDF
 DARK_BACKGROUND = (38, 33, 43)
 
 
-@pytest.mark.skip(reason="Manually run")
+# @pytest.mark.skip(reason="Manually run")
 def test():
     style = NotionStyle()
     pdf = PDF(style)
@@ -65,7 +65,7 @@ def test():
                 priority="Low",
                 story_points=13,
                 flagged=True,
-                category="Nice to have",
+                category=Category.NICE_TO_HAVE,
             ),
             Ticket(
                 key="PD-34",
@@ -79,5 +79,18 @@ def test():
     )
 
     pdf.add_page()
-    pdf.bar_chart([10, 5, 8, 3, 2, 7, 1])
+
+    (x, y) = pdf.bar_chart([10, 5, 8, 3, 2, 7, 1])
+
+    pdf.set_x(x + 10)
+    pdf.pie_chart(
+        {
+            "cat1": 10,
+            "cat3": 8,
+            "cat2": 5,
+            "cat4": 3,
+        },
+        width=30,
+        caption="Categories",
+    )
     pdf.output("./output/test.pdf")
